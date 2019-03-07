@@ -30,13 +30,16 @@ void delete_bst(Bst bst)
 {
   if(bst==0)return;
   sfree(bst);
+  sfree(bst->right);
+  sfree(bst->left);
 }
 
 
 int get_depth(Bst bst)
 {
   if (bst==0) return 0;
-  return 1;
+  if  (bst->right==0&&bst->left==0)return 1;
+  return 2;
 }
 
 
@@ -59,8 +62,6 @@ void add(Bst* bst, int value)
   {
     (*bst)->right=newNode;
   }
-
-
 }
 
 int root_value(Bst bst)
