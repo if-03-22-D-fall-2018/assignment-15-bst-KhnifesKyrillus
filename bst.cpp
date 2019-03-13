@@ -31,8 +31,8 @@ Bst new_bst()
 void delete_bst(Bst bst)
 {
   if(bst==0)return;
-  if(bst->right!=0)sfree(bst->right);
-  if(bst->left!=0)sfree(bst->left);
+  delete_bst(bst->right);
+  delete_bst(bst->left);
   sfree(bst);
 }
 
@@ -40,7 +40,16 @@ void delete_bst(Bst bst)
 int get_depth(Bst bst)
 {
   if (bst==0) return 0;
-  if  (bst->right==0&&bst->left==0)return 1;
+  int right=get_depth(bst->right);
+  int left=get_depth(bst->left);
+  if(left <= right)
+  {
+    return right+1;
+  }
+  else
+  {
+    return left+1;
+  }
   return 2;
 }
 
