@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include "general.h"
 
-void insert(Bst* bst,Node* newNode) ;
+struct Node *create_new_node(int value);
 
 struct Node
 {
@@ -25,7 +25,8 @@ struct Node
 
 Bst new_bst()
 {
-  return 0;
+  Bst bst=0;
+  return bst;
 }
 
 void delete_bst(Bst bst)
@@ -52,48 +53,38 @@ int get_depth(Bst bst)
   }
   return 2;
 }
-
-
-void add(Bst* bst, int value)
+struct Node* create_new_node(int value)
 {
   Node* newNode=(struct Node*)malloc(sizeof(struct Node));
   newNode->value=value;
   newNode->right=0;
   newNode->left=0;
-  if (*bst==0)
-  {
-    (*bst)=newNode;
-    return;
-  }
-  insert(bst,newNode);
 }
 
-void insert(Bst* bst,Node* newNode)
+void add(Bst* bst, int value)
 {
-  if(newNode->value<=(*bst)->value)
+  if (*bst==0)
+  {
+    (*bst)=create_new_node(value);
+    return;
+  }
+  if(value<=(*bst)->value)
   {
     if((*bst)->left==0)
     {
-      (*bst)->left=newNode;
+      (*bst)->left=create_new_node(value);
       return;
     }
-    else
-    {
-      insert(&(*bst)->left,newNode);
-    }
-    
+    add(&(*bst)->left,value);
   }
-  else if(newNode->value>(*bst)->value)
+  else if(value>(*bst)->value)
   {
    if((*bst)->right==0)
     {
-      (*bst)->right=newNode;
+      (*bst)->right=create_new_node(value);
       return;
     }
-    else
-    {
-      insert(&(*bst)->right,newNode);
-    }
+  add(&(*bst)->right,value);
   }
 }
 
@@ -116,12 +107,23 @@ Bst right_subtree(Bst root)
 
 int traverse_pre_order(Bst bst, int *elements, int start)
 {
-  return 0;
+  if(bst==0) return start;
+  elements[start] = bst->value;
+  start++;
+  start = traverse_pre_order(bst->left, elements, start);
+  start = traverse_pre_order(bst->right, elements, start);
+  return start;
 }
 
 int traverse_in_order(Bst bst, int *elements, int start)
 {
-  return 0;
+  if(bst == 0) return start;
+  start = traverse_in_order(bst->left, elements, start);
+  elements[start] = bst->value;
+  start++;
+  start = traverse_in_order(bst->right, elements, start);
+  return start;
+
 }
 
 int traverse_post_order(Bst bst, int *elements, int start)
