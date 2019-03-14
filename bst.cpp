@@ -53,12 +53,14 @@ int get_depth(Bst bst)
   }
   return 2;
 }
+
 struct Node* create_new_node(int value)
 {
   Node* newNode=(struct Node*)malloc(sizeof(struct Node));
   newNode->value=value;
   newNode->right=0;
   newNode->left=0;
+  return newNode;
 }
 
 void add(Bst* bst, int value)
@@ -97,51 +99,89 @@ int root_value(Bst bst)
 
 Bst left_subtree(Bst root)
 {
+  if (root==0) return 0;
   return root->left;
 }
 
 Bst right_subtree(Bst root)
 {
+  if (root==0) return 0;
   return root->right;
 }
 
 int traverse_pre_order(Bst bst, int *elements, int start)
 {
-  if(bst==0) return start;
-  elements[start] = bst->value;
-  start++;
-  start = traverse_pre_order(bst->left, elements, start);
-  start = traverse_pre_order(bst->right, elements, start);
+  if(bst!=0)
+  {
+    elements[start] = bst->value;
+    start++;
+    start = traverse_pre_order(bst->left, elements, start);
+    start = traverse_pre_order(bst->right, elements, start);
+  }
   return start;
 }
 
 int traverse_in_order(Bst bst, int *elements, int start)
 {
-  if(bst == 0) return start;
-  start = traverse_in_order(bst->left, elements, start);
-  elements[start] = bst->value;
-  start++;
-  start = traverse_in_order(bst->right, elements, start);
+  if(bst != 0)
+  {
+    start = traverse_in_order(bst->left, elements, start);
+    elements[start] = bst->value;
+    start++;
+    start = traverse_in_order(bst->right, elements, start);
+  }
   return start;
 
 }
 
 int traverse_post_order(Bst bst, int *elements, int start)
 {
-  return 0;
+  if(bst!=0)
+  {
+    start = traverse_post_order(bst->left, elements, start);
+    start = traverse_post_order(bst->right, elements, start);
+    elements[start] = bst->value;
+    start++;
+  }
+  return start;
 }
 
 bool are_equal(Bst bst1, Bst bst2)
 {
+  if (bst1==0) return bst2==0;
+  if (get_depth(bst1)==get_depth(bst2))
+  {
+    if (bst1->value==bst2->value)
+    {
+      return are_equal(bst1->left,bst2->left)&&are_equal(bst1->right,bst2->right);
+    }
+  }
   return false;
 }
 
 void most_left_longest_branch(Bst bst, Bst* branch)
 {
-
+  if(bst != 0)
+  {
+    if(get_depth(bst->left) < get_depth(bst->right))
+    {
+      add(branch, bst->value);
+      most_left_longest_branch(&(*bst->right), branch);
+    }
+    else if(get_depth(bst->left) >= get_depth(bst->right))
+    {
+      add(branch, bst->value);
+      most_left_longest_branch(&(*bst->left), branch);
+    }
+  }
 }
 
 int get_number_of_subtrees(Bst bst)
 {
-  return 0;
+  if (bst != 0)
+  {
+    int *elements = new int[get_depth(bst)];
+    return traverse_pre_order(bst, elements, 0) -1;
+  }
+  return -1;
 }
